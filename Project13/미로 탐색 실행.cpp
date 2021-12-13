@@ -123,6 +123,7 @@ bool isValidLoc(int r, int c)
 
 void printMap()
 {
+    printf("엔터를 입력해주세요.");
     if (cin.get() == '\n')
         system("cls");
     for (int i = 0; i < MAZE_HEIGHT; i++)
