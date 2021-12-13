@@ -1,7 +1,4 @@
-#include <stdio.h>
 #include <Windows.h>	// COORD
-#include <string.h>		// memset()
-#include <time.h>		// time()
 
 // 크기는 홀수여야함
 const int MAP_WIDTH = 11;
