@@ -236,7 +236,7 @@ void QueueMaze(int ran) // 큐 미로 탐색 시작
         }
         else {
             map[r][c] = '.'; // 현재 위치를 "지나옴" 처리
-            // 현재 위치에서 상하좌우 중 갈 수 있는 모든 경로를 스택에 추가
+            // 현재 위치에서 상하좌우 중 갈 수 있는 모든 경로를 큐에 추가
             if (isValidLoc(r - 1, c)) {
                 locQueue.enqueue(new Node(r - 1, c));
                 map[r - 1][c] = '2';
