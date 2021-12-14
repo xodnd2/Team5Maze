@@ -152,7 +152,7 @@ void printMap()
                 }
             }// 출구
             else if (map[i][j] == '.') printf("♩"); // 지나온 경로
-            else if (map[i][j] == '2') printf("♩");
+            else if (map[i][j] == '2') printf("□");
         }
         printf("\n");
     } 
@@ -177,7 +177,7 @@ void StackMaze(int ran) // 스택 미로 탐색 시작
         int r = here->getRow();
         int c = here->getCol();
         stackPath->enqueue(new Node(r,c)); // 현재 위치 저장
-        if (map[r][c] == 'x') // 현재 위치가 출구이면 성공
+        if (map[r][c] == map[exit_->getRow()][exit_->getCol()]) // 현재 위치가 출구이면 성공
         {
             printMap();
             printf("\n스택 미로 탐색 성공\n\n");
@@ -190,10 +190,25 @@ void StackMaze(int ran) // 스택 미로 탐색 시작
         {
             map[r][c] = '.'; // 현재 위치를 "지나옴" 처리
             // 현재 위치에서 상하좌우 중 갈 수 있는 모든 경로를 스택에 추가
-            if (isValidLoc(r - 1, c)) locStack.push(new Node(r - 1, c)); // 상
-            if (isValidLoc(r + 1, c)) locStack.push(new Node(r + 1, c)); // 하
-            if (isValidLoc(r, c - 1)) locStack.push(new Node(r, c - 1)); // 좌
-            if (isValidLoc(r, c + 1)) locStack.push(new Node(r, c + 1)); // 우
+            if (isValidLoc(r - 1, c)) {
+                locStack.push(new Node(r - 1, c));
+                map[r - 1][c] = '2';
+            }; // 상
+            if (isValidLoc(r + 1, c))
+            {
+                locStack.push(new Node(r + 1, c));
+                map[r + 1][c] = '2';
+            }// 하
+            if (isValidLoc(r, c - 1)) {
+                locStack.push(new Node(r, c - 1));
+                map[r][c - 1] = '2';
+            }
+            // 좌
+            if (isValidLoc(r, c + 1))
+            {
+                locStack.push(new Node(r, c + 1));
+                map[r][c + 1] = '2';
+            }// 우
         }
             printMap();
     }        
@@ -202,6 +217,7 @@ void StackMaze(int ran) // 스택 미로 탐색 시작
     // 스택 & 큐 동시 진행할 때, 큐가 끝나고 스택 맵을 다시 출력해주기 위해 저장
     StackMapSave();
     savedStackMap[entry->getRow()][entry->getCol()] = 'e'; // entry 노드가 삭제되므로 맵 직접 변경
+    savedStackMap[exit_->getRow()][exit_->getCol()] = 'x';
     delete exit_;
     delete entry;
 }
@@ -290,6 +306,7 @@ void PrintSavedStackMap()
             }
             else if (savedStackMap[i][j] == 'x') printf("♬"); // 출구
             else if (savedStackMap[i][j] == '.') printf("♩"); // 지나온 경로
+            else if (savedStackMap[i][j] == '2') printf("□");
         }
         printf("\n");
     }
