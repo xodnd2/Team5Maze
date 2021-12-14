@@ -124,7 +124,8 @@ bool isValidLoc(int r, int c)
 
 void printMap()
 {
-    
+    printf("엔터를 입력해주세요.");
+    if (cin.get() == '\n')
         system("cls");
     for (int i = 0; i < MAZE_HEIGHT; i++)
     {
@@ -161,6 +162,7 @@ void StackMaze(int ran) // 스택 미로 탐색 시작
 {
     stackPath = new LinkedQueue();
     entry = new Node(0, 0);
+    exit_ = new Node(0, 0);
     GetMap(ran); // input.txt로부터 미로 불러오기
     
     int stackSuccess = 0; // 스택 미로 탐색 성공 여부 확인용
@@ -200,6 +202,7 @@ void StackMaze(int ran) // 스택 미로 탐색 시작
     // 스택 & 큐 동시 진행할 때, 큐가 끝나고 스택 맵을 다시 출력해주기 위해 저장
     StackMapSave();
     savedStackMap[entry->getRow()][entry->getCol()] = 'e'; // entry 노드가 삭제되므로 맵 직접 변경
+    delete exit_;
     delete entry;
 }
 
@@ -259,6 +262,7 @@ void QueueMaze(int ran) // 큐 미로 탐색 시작
     if (queueSuccess == 0)
         printf("\n큐 미로 탐색 실패\n\n");
     delete entry;
+    delete exit_;
 }
 
 // 스택 맵 저장
