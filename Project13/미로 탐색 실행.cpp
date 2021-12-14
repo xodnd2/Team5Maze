@@ -9,6 +9,7 @@ static string savedStackMap[MAXCAP];
 static int MAZE_HEIGHT;
 static int MAZE_WIDTH;
 static Node* entry = nullptr;
+static Node* exit_ = nullptr;
 //큐를 이용해 모든 경로 저장
 static LinkedQueue *stackPath = nullptr;
 static LinkedQueue* queuePath = nullptr;
@@ -123,8 +124,7 @@ bool isValidLoc(int r, int c)
 
 void printMap()
 {
-    printf("엔터를 입력해주세요.");
-    if (cin.get() == '\n')
+    
         system("cls");
     for (int i = 0; i < MAZE_HEIGHT; i++)
     {
@@ -142,8 +142,16 @@ void printMap()
                     entry->setCol(j);
                 }               
             }
-            else if (map[i][j] == 'x') printf("♬"); // 출구
+            else if (map[i][j] == 'x'||(i == exit_->getRow() && j == exit_->getCol())) {
+                printf("♬");
+                if (map[i][j] == 'x')
+                {
+                    exit_->setRow(i);
+                    exit_->setCol(j);
+                }
+            }// 출구
             else if (map[i][j] == '.') printf("♩"); // 지나온 경로
+            else if (map[i][j] == '2') printf("♩");
         }
         printf("\n");
     } 
@@ -199,6 +207,7 @@ void QueueMaze(int ran) // 큐 미로 탐색 시작
 {
     queuePath = new LinkedQueue();
     entry = new Node(0, 0);
+    exit_ = new Node(0, 0);
     GetMap(ran);
     int queueSuccess = 0; // 큐 미로 탐색 성공 여부 확인용
 
@@ -213,7 +222,7 @@ void QueueMaze(int ran) // 큐 미로 탐색 시작
         int r = here->getRow();
         int c = here->getCol();
         queuePath->enqueue(new Node(r, c)); // 현재 위치 저장
-        if (map[r][c] == 'x') // 현재 위치가 출구이면 성공 
+        if (map[r][c] == map[exit_->getRow()][exit_->getCol()]) // 현재 위치가 출구이면 성공 
         {
             printMap();
             printf("\n큐 미로 탐색 성공\n\n");
@@ -224,11 +233,26 @@ void QueueMaze(int ran) // 큐 미로 탐색 시작
         }
         else {
             map[r][c] = '.'; // 현재 위치를 "지나옴" 처리
-            // 현재 위치에서 상하좌우 중 갈 수 있는 모든 경로를 큐에 추가
-            if (isValidLoc(r - 1, c)) locQueue.enqueue(new Node(r - 1, c)); // 상
-            if (isValidLoc(r + 1, c)) locQueue.enqueue(new Node(r + 1, c)); // 하
-            if (isValidLoc(r, c - 1)) locQueue.enqueue(new Node(r, c - 1)); // 좌
-            if (isValidLoc(r, c + 1)) locQueue.enqueue(new Node(r, c + 1)); // 우
+            // 현재 위치에서 상하좌우 중 갈 수 있는 모든 경로를 스택에 추가
+            if (isValidLoc(r - 1, c)) {
+                locQueue.enqueue(new Node(r - 1, c));
+                map[r - 1][c] = '2';
+            }; // 상
+            if (isValidLoc(r + 1, c))
+            {
+                locQueue.enqueue(new Node(r + 1, c));
+                map[r + 1][c] = '2';
+            }// 하
+            if (isValidLoc(r, c - 1)) {
+                locQueue.enqueue(new Node(r, c - 1));
+                map[r][c - 1] = '2';
+            }
+            // 좌
+            if (isValidLoc(r, c + 1))
+            {
+                locQueue.enqueue(new Node(r, c + 1));
+                map[r][c + 1] = '2';
+            }// 우
         }
             printMap();
     }
